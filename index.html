@@ -747,38 +747,6 @@
         .quality-cancel:hover { background:rgba(255,255,255,0.09); color:#fff; }
 
         /* ══════════════════════════════════════════
-           AD OVERLAY
-        ══════════════════════════════════════════ */
-        .ad-overlay {
-            position:fixed; inset:0; background:#000;
-            z-index:9999; display:none; flex-direction:column;
-        }
-        .ad-overlay.show { display:flex; }
-        .ad-top-bar {
-            display:flex; justify-content:space-between; align-items:center;
-            padding:0.85rem 1.1rem;
-            background:rgba(0,0,0,0.9);
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-        }
-        .ad-countdown { font-size:0.82rem; color:var(--muted); display:flex; align-items:center; gap:0.45rem; }
-        .ad-countdown-circle {
-            width:32px; height:32px; border-radius:50%;
-            border: 2px solid var(--gold);
-            display:flex; align-items:center; justify-content:center;
-            font-size:0.78rem; font-weight:700; color:var(--gold);
-        }
-        .ad-skip-btn {
-            background: linear-gradient(135deg,var(--gold),var(--gold2));
-            color:#0c0e13; border:none; padding:0.5rem 1.2rem;
-            border-radius:20px; font-weight:700; font-size:0.82rem;
-            cursor:pointer; font-family:'Poppins',sans-serif;
-            display:none; transition: var(--transition);
-            box-shadow: 0 4px 16px rgba(255,213,79,0.3);
-        }
-        .ad-skip-btn.show { display:block; animation:fadeUp 0.3s ease; }
-        .ad-frame { flex:1; border:none; width:100%; }
-
-        /* ══════════════════════════════════════════
            SETTINGS PAGE
         ══════════════════════════════════════════ */
         .settings-page {
@@ -1572,17 +1540,7 @@
         </div>
     </div>
 
-    <!-- AD OVERLAY -->
-    <div class="ad-overlay" id="adOverlay">
-        <div class="ad-top-bar">
-            <div class="ad-countdown">
-                <div class="ad-countdown-circle" id="adTimerCircle">30</div>
-                <span>seconds remaining</span>
-            </div>
-            <button class="ad-skip-btn" id="adSkipBtn" onclick="skipAd()"><i class="fas fa-forward"></i> Skip Ad</button>
-        </div>
-        <iframe class="ad-frame" id="adFrame" src="" allowfullscreen></iframe>
-    </div>
+
 
     <!-- SETTINGS PAGE -->
     <div class="settings-page" id="settingsPage">
@@ -1751,7 +1709,7 @@
         // =========================================
         let isLoggedIn=false, currentUser=null, allMovies=[], currentMovieId=null, currentMovieData=null;
         let selectedQuality='', currentSlide=0, slideInterval=null, enteredPin='', pinLength=4;
-        let adCountdownInterval=null, chatListener=null, typewriterInterval=null;
+        let chatListener=null, typewriterInterval=null;
         let currentPage='home';
 
         // =========================================
@@ -1763,7 +1721,6 @@
             if(document.getElementById('videoPlayerFloat').classList.contains('show')){closeVideoPlayer();pushPage(currentPage);return;}
             if(document.getElementById('dlOverlay').classList.contains('show')){DownloadManager.close();pushPage(currentPage);return;}
             if(document.getElementById('qualityModal').classList.contains('show')){document.getElementById('qualityModal').classList.remove('show');pushPage(currentPage);return;}
-            if(document.getElementById('adOverlay').classList.contains('show')){pushPage(currentPage);return;}
             if(document.getElementById('searchOverlay').classList.contains('show')){closeSearch();pushPage(currentPage);return;}
             if(event.state&&event.state.page){showPageDirect(event.state.page,event.state.data);}else{showPageDirect('home');}
         });
@@ -2080,13 +2037,9 @@
         // =========================================
         function showQualityModal(){document.getElementById('qualityModal').classList.add('show');}
         function closeQualityModal(e){if(e&&e.target!==document.getElementById('qualityModal'))return;document.getElementById('qualityModal').classList.remove('show');}
-        function downloadMovie(q){selectedQuality=q;document.getElementById('qualityModal').classList.remove('show');showAd();}
-        function showAd(){const o=document.getElementById('adOverlay');const f=document.getElementById('adFrame');const ti=document.getElementById('adTimerCircle');const sb=document.getElementById('adSkipBtn');o.classList.add('show');sb.classList.remove('show');f.src='https://www.effectivegatecpm.com/id78mr691?key=962e9e67496edd6bbbbad31397ad40a2';let tl=30;ti.textContent=tl;if(adCountdownInterval)clearInterval(adCountdownInterval);adCountdownInterval=setInterval(()=>{tl--;ti.textContent=tl;if(tl<=0){clearInterval(adCountdownInterval);sb.classList.add('show');}},1000);}
-        function skipAd(){
-            if(adCountdownInterval)clearInterval(adCountdownInterval);
-            document.getElementById('adOverlay').classList.remove('show');
-            document.getElementById('adFrame').src='';
-            document.getElementById('adSkipBtn').classList.remove('show');
+        function downloadMovie(q){
+            selectedQuality=q;
+            document.getElementById('qualityModal').classList.remove('show');
             if(currentMovieData&&currentMovieData.movie_links){
                 const url=currentMovieData.movie_links[selectedQuality];
                 if(url){ DownloadManager.start(url, selectedQuality, currentMovieData.title||'Movie'); }
