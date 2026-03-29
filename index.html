@@ -1976,13 +1976,14 @@
             document.getElementById('vpQualitySelect').classList.add('hidden');
             _vpReset();
             document.getElementById('vpQualitySelect').classList.add('hidden');
-            const isEmbed=/streamtape|doodstream|vidcloud|filemoon|upstream|voe|mixdrop|streamwish/i.test(url);
+            const isEmbed=/streamtape|doodstream|vidcloud|filemoon|upstream|voe|mixdrop|streamwish|screenpal\.com/i.test(url);
             const isHLS=/\.m3u8/i.test(url);
             const isYouTube=/youtube\.com|youtu\.be/i.test(url);
             const video=document.getElementById('vpVideo');
             const ifr=document.getElementById('vpIframe');
             if(isYouTube){
-                var ytId=url.match(/(?:v=|youtu\.be\/|embed\/)([^&?/\s]+)/);
+                // Handle /shorts/ URLs
+                var ytId=url.match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([^&?/\s]+)/);
                 if(!ytId){_vpShowError('Invalid YouTube URL',url.substring(0,80));return;}
                 var embedUrl='https://www.youtube.com/embed/'+ytId[1]+'?autoplay=1&rel=0&modestbranding=1';
                 video.style.display='none';ifr.style.display='block';
