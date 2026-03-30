@@ -578,23 +578,25 @@
         /* Cast */
         .cast-scroll {
             display:flex; gap:0.85rem; overflow-x:auto;
-            padding:0.3rem 0 0.6rem; scrollbar-width:none;
+            padding:0.3rem 0 0.8rem; scrollbar-width:none;
             -webkit-overflow-scrolling:touch;
+            will-change:scroll-position;
         }
         .cast-scroll::-webkit-scrollbar { display:none; }
-        .cast-card { min-width:90px; text-align:center; flex-shrink:0; cursor:default; }
+        .cast-card {
+            min-width:90px; max-width:90px;
+            display:flex; flex-direction:column; align-items:center;
+            text-align:center; flex-shrink:0; cursor:default;
+        }
         .cast-card img {
             width:76px; height:76px; border-radius:16px; object-fit:cover;
+            display:block; flex-shrink:0;
             box-shadow: 0 3px 12px rgba(0,0,0,0.14);
             border: 0.5px solid rgba(0,0,0,0.06);
-            transition: var(--transition);
+            background: var(--bg3);
         }
-        .cast-card:hover img {
-            transform:translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0,122,255,0.18);
-        }
-        .cast-actor { font-size:0.75rem; font-weight:600; margin-top:0.4rem; line-height:1.2; color: var(--text); }
-        .cast-character { font-size:0.67rem; color:var(--muted); line-height:1.2; }
+        .cast-actor { font-size:0.75rem; font-weight:600; margin-top:0.42rem; line-height:1.25; color: var(--text); word-break:break-word; }
+        .cast-character { font-size:0.65rem; color:var(--muted); line-height:1.25; word-break:break-word; }
 
         /* Storyline */
         .storyline-text {
@@ -2340,7 +2342,8 @@
             // Cast
             const castSection=document.getElementById('castSection');
             const castScroll=document.getElementById('castScroll');
-            if(m.cast&&m.cast.length){castSection.style.display='';castScroll.innerHTML=m.cast.map(c=>`<div class="cast-card"><img src="${c.photo||'https://via.placeholder.com/76x76/111/555?text=?'}" alt="${c.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/76x76/111/555?text=?'"><div class="cast-actor">${c.name}</div><div class="cast-character">${c.character||''}</div></div>`).join('');}
+            const noPhotoSvg="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='76' height='76' viewBox='0 0 76 76'%3E%3Crect width='76' height='76' rx='16' fill='%23e5e5ea'/%3E%3Ccircle cx='38' cy='28' r='14' fill='%23aeaeb2'/%3E%3Cellipse cx='38' cy='60' rx='22' ry='14' fill='%23aeaeb2'/%3E%3C/svg%3E";
+            if(m.cast&&m.cast.length){castSection.style.display='';castScroll.innerHTML=m.cast.map(c=>{const photo=c.photo||noPhotoSvg;const name=escapeHtml(c.name||'');const character=escapeHtml(c.character||'');return `<div class="cast-card"><img src="${photo}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='${noPhotoSvg}'"><div class="cast-actor">${name}</div><div class="cast-character">${character}</div></div>`;}).join('');}
             else{castSection.style.display='none';}
 
             // Similar
